@@ -32,6 +32,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 1.8
+          distribution: temurin
       - name: Install PostgreSQL
         run: |
           choco install postgresql --version ${{ matrix.pg }} --params "/Password:Password12!"
