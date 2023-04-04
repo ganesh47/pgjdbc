@@ -12,8 +12,6 @@ on:
       - '**/*.md'
       - '.travis.yml'
       - '.travis/**'
-env:
-  JAVA_HOME: 'C:\Program Files\Java\jdk1.8.0'
 
 jobs:
   build:
@@ -31,7 +29,7 @@ jobs:
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
-          java-version: 1.8
+          java-version: 8.0
           distribution: temurin
       - name: Install PostgreSQL
         run: |
