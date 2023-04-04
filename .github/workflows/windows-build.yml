@@ -14,7 +14,6 @@ on:
       - '.travis/**'
 env:
   JAVA_HOME: 'C:\Program Files\Java\jdk1.8.0'
-  PGDATA: ${{ runner.temp }}\pgdata
 
 jobs:
   build:
@@ -38,15 +37,15 @@ jobs:
           choco install postgresql --version ${{ matrix.pg }} --params "/Password:Password12!"
       - name: Initialize PostgreSQL
         run: |
-          mkdir ${{ env.PGDATA }}
-          initdb -D ${{ env.PGDATA }}
-          echo "wal_level=logical" >> ${{ env.PGDATA }}/postgresql.conf
-          echo "max_wal_senders=3" >> ${{ env.PGDATA }}/postgresql.conf
-          echo "wal_keep_segments=10" >> ${{ env.PGDATA }}/postgresql.conf
-          echo "wal_sender_timeout=5s" >> ${{ env.PGDATA }}/postgresql.conf
-          echo "max_replication_slots=10" >> ${{ env.PGDATA }}/postgresql.conf
-          echo "host all all 0.0.0.0/0 trust" >> ${{ env.PGDATA }}/pg_hba.conf
-          echo "listen_addresses = '*'" >> ${{ env.PGDATA }}/postgresql.conf
+          mkdir ${{ runner.temp }}/pgdata
+          initdb -D ${{ runner.temp }}/pgdata
+          echo "wal_level=logical" >> ${{ runner.temp }}/pgdata/postgresql.conf
+          echo "max_wal_senders=3" >> ${{ runner.temp }}/pgdata/postgresql.conf
+          echo "wal_keep_segments=10" >> ${{ runner.temp }}/pgdata/postgresql.conf
+          echo "wal_sender_timeout=5s" >> ${{ runner.temp }}/pgdata/postgresql.conf
+          echo "max_replication_slots=10" >> ${{ runner.temp }}/pgdata/postgresql.conf
+          echo "host all all 0.0.0.0/0 trust" >> ${{ runner.temp }}/pgdata/pg_hba.conf
+          echo "listen_addresses = '*'" >> ${{ runner.temp }}/pgdata/postgresql.conf
           pg_ctl -D ${{ env.PGDATA }} -w start
       - name: Create test user and database
         run: |
