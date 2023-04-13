@@ -34,6 +34,10 @@ jobs:
       - name: Install PostgreSQL
         run: |
           choco install postgresql --version ${{ matrix.pg }} --params "/Password:Password12!"
+      - name: Update Paths
+        run: |
+          $TARGET = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin" | Select -ExpandProperty Path
+           echo "$TARGET" >> $env:GITHUB_PATH
       - name: Initialize PostgreSQL
         run: |
           mkdir ${{ runner.temp }}/pgdata
