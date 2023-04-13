@@ -37,11 +37,14 @@ jobs:
       - name: Update Paths
         run: |
           $TARGET = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin" | Select -ExpandProperty Path
-           echo "$TARGET" >> $env:GITHUB_PATH
+          echo "$TARGET"
+          echo "$TARGET" >> $env:GITHUB_PATH
       - name: Initialize PostgreSQL
         run: |
+          $TARGET = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin" | Select -ExpandProperty Path
+          echo "$TARGET"
           mkdir ${{ runner.temp }}/pgdata
-          initdb -D ${{ runner.temp }}/pgdata
+          $TARGET/initdb -D ${{ runner.temp }}/pgdata
           echo "wal_level=logical" >> ${{ runner.temp }}/pgdata/postgresql.conf
           echo "max_wal_senders=3" >> ${{ runner.temp }}/pgdata/postgresql.conf
           echo "wal_keep_segments=10" >> ${{ runner.temp }}/pgdata/postgresql.conf
