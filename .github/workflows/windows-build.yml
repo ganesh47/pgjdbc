@@ -36,15 +36,15 @@ jobs:
           choco install postgresql --version ${{ matrix.pg }} --params "/Password:Password12!"
       - name: Update Paths
         run: |
-          $TARGET = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin" | Select -ExpandProperty Path
+          $TARGET = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin\" | Select -ExpandProperty Path
           echo "$TARGET"
           echo "$TARGET" >> $env:GITHUB_PATH
       - name: Initialize PostgreSQL
         run: |
-          $TARGET = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin" | Select -ExpandProperty Path
-          echo "$TARGET"
+          $initdb = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin\initdb" | Select -ExpandProperty Path
+          $pg_ctl = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin\pg_ctl" | Select -ExpandProperty Path
           mkdir ${{ runner.temp }}/pgdata
-          $TARGET/initdb -D ${{ runner.temp }}/pgdata
+          & $initdb -D ${{ runner.temp }}/pgdata
           echo "wal_level=logical" >> ${{ runner.temp }}/pgdata/postgresql.conf
           echo "max_wal_senders=3" >> ${{ runner.temp }}/pgdata/postgresql.conf
           echo "wal_keep_segments=10" >> ${{ runner.temp }}/pgdata/postgresql.conf
@@ -52,9 +52,10 @@ jobs:
           echo "max_replication_slots=10" >> ${{ runner.temp }}/pgdata/postgresql.conf
           echo "host all all 0.0.0.0/0 trust" >> ${{ runner.temp }}/pgdata/pg_hba.conf
           echo "listen_addresses = '*'" >> ${{ runner.temp }}/pgdata/postgresql.conf
-          pg_ctl -D ${{ env.PGDATA }} -w start
+          & $pg_ctl -D ${{ env.PGDATA }} -w start
       - name: Create test user and database
         run: |
+          $psql = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin\psql" | Select -ExpandProperty Path
           psql -U postgres -c "CREATE USER test WITH PASSWORD 'test';"
           psql -U postgres -c "ALTER USER test WITH CREATEDB;"
           createdb -U postgres test
