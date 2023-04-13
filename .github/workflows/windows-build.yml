@@ -56,9 +56,10 @@ jobs:
       - name: Create test user and database
         run: |
           $psql = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin\psql" | Select -ExpandProperty Path
-          psql -U postgres -c "CREATE USER test WITH PASSWORD 'test';"
-          psql -U postgres -c "ALTER USER test WITH CREATEDB;"
-          createdb -U postgres test
+          $createdb = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin\createdb" | Select -ExpandProperty Path
+          & $psql -U postgres -c "CREATE USER test WITH PASSWORD 'test';"
+          & $psql -U postgres -c "ALTER USER test WITH CREATEDB;"
+          & $createdb -U postgres test
       - name: Build and test
         run: |
           ./gradlew -P privilegedPassword=Password12! assemble test
