@@ -54,7 +54,7 @@ jobs:
           echo "max_replication_slots=10" >> ${{ runner.temp }}/pgdata/postgresql.conf
           echo "host all all 0.0.0.0/0 trust" >> ${{ runner.temp }}/pgdata/pg_hba.conf
           echo "listen_addresses = '*'" >> ${{ runner.temp }}/pgdata/postgresql.conf
-          & $pg_ctl -D ${{ env.PGDATA }} -w start
+          & $pg_ctl -D ${{ runner.temp }}/pgdata -w start
       - name: Create test user and database
         run: |
           $psql = Resolve-Path "C:\Program Files\PostgreSQL\.*\bin\psql" | Select -ExpandProperty Path
